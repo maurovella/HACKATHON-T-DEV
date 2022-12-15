@@ -24,13 +24,15 @@ contract myContract is ERC721URIStorage, Ownable,
    uint32 private tokenQty;
    deadLine[] private deadLineList;
    uint16 index;
-    event LogObjectiveQuery(string description);
-
-    uint64 hasComplied;
+   event LogObjectiveQuery(string description);
+   uint64 hasComplied;
 
    constructor(uint32 tokenPrize_, uint32 tokenQty_ ,deadLine[] memory deadLinesList_) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
         // poder mandarle los fondos que obtuvieron de las tranferencias.
+        tokenPrize = tokenPrize_;
+        tokenQty = tokenQty_;
+        deadLineList = deadLinesList_
         ownerAddress = payable(msg.sender);
     }
 
