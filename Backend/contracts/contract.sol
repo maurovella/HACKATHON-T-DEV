@@ -9,23 +9,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 import "github.com/provable-things/ethereum-api/provableAPI.sol";
 
-contract myContract is
-    ERC721URIStorage,
-    Ownable,
-    usingProvable 
-{
+struct deadLine {
+    uint64 day;
+    uint16 percetage;
+}
+contract myContract is ERC721URIStorage, Ownable,
+    usingProvable  { //este es el nombre del contrato
     using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenIds;
-    mapping(address => uint256) private amountCash;
-    // Its mapping a token to the company
-    mapping(uint256 => address) private _tokenToCompany;
-    uint64 hasComplied;
-    address payable private ownerAddress;
-
+   Counters.Counter private _tokenIds;
+   // Its mapping a token to the company
+   mapping(uint256 => address) private _tokenToCompany;
+   address payable private ownerAddress;
+   uint32 private tokenPrize;
+   uint32 private tokenQty;
+   deadLine[] private deadLineList;
+   uint16 index;
     event LogObjectiveQuery(string description);
 
-    constructor() ERC721("NFT", "ENFT") {
+    uint64 hasComplied;
+
+   constructor(uint32 tokenPrize_, uint32 tokenQty_ ,deadLine[] memory deadLinesList_) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
         // poder mandarle los fondos que obtuvieron de las tranferencias.
         ownerAddress = payable(msg.sender);
@@ -53,14 +56,7 @@ contract myContract is
         ownerAddress.transfer(_amount);
     }
 
-    //to.transfer works because we made the address above payable.
-    function transferAll() public payable {
-        payable(msg.sender).transfer(amountCash[msg.sender]);
-    }
 
-    function addCompany(address payable client) public onlyOwner {
-        amountCash[client] = 0;
-    }
 
     function transferFromPayable(
         address from,
