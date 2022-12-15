@@ -22,7 +22,8 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
    uint32 private tokenPrize;
    uint32 private tokenQty;
    deadLine[] private deadLineList;
-   uint16 index;
+   uint16 private index;
+   uint256 private balance;
 
    constructor(uint32 tokenPrize_, uint32 tokenQty_ ,deadLine[] memory deadLinesList_) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
@@ -36,7 +37,9 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
     function totalSupply() public view returns(uint256){
         return _tokenIds.current();
     }
-   function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256){
+   function mintNFT(address recipient, string memory tokenURI) public payable returns (uint256){
+        require(msg.balance == tokenPrize);
+        balance += msg.balance;
        _tokenIds.increment();
        uint256 newItemId = _tokenIds.current();
        _mint(recipient, newItemId);
@@ -45,17 +48,19 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
    }
     //the owner can withdraw from the contract because payable was added to the state variable above
     function withdraw (uint _amount) public onlyOwner {
-        require(msg.sender <= contractCash)
-        ownerAddress.transfer(_amount);
+        require(msg.sender <= balance);
+        require(deadLineList[index].day <= block.timestamp);
+        if(index == deadLineList.length - 1)
+            ownerAddress.transfer(balance);
+            balance = 0;
+        else{
+            //TODO chequear tema decimales
+            //transfer(ownerAddress, balance * deadlineList[index].percentage) * (10 ** 2))
+            uint256 toTransfer = (deadLineList[index].percetage * balance) / 100;
+            ownerAddress.transfer(toTransfer);
+            balance -= toTransfer;
+            index++;
+        }
+
     }
-    //to.transfer works because we made the address above payable.
-    function transferAll() public payable  {
-
-        payable(msg.sender).transfer(contractCash);
-    }
-   
-
-
-   
-
 }
