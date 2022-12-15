@@ -1,6 +1,7 @@
 import './LogIn.css';
 import './app.css';
 import Web3 from "web3";
+import React from 'react';
 
 function LogIn() {
 
@@ -21,7 +22,7 @@ function LogIn() {
     return (
         <div className="App">
             <header className="App-header">
-                <h1 className="Title">Stockify</h1>
+                <h1 className="App-title">Stockify</h1>
                 <button onClick={()=>loadBlockChain()}>Log in</button>
             </header>
         </div>
