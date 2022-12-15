@@ -16,16 +16,20 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
    // Its mapping a token to the company
    mapping(uint256 => address) private _tokenToCompany;
    address payable private ownerAddress;
-   constructor() ERC721("NFT", "ENFT") {
+   uint32 private tokenPrize;
+   uint32 private tokenQty;
+
+   constructor(uint32 tokenPrize_, uint32 tokenQty_ ) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
         // poder mandarle los fondos que obtuvieron de las tranferencias.
         ownerAddress = payable(msg.sender);
+        tokenPrize = tokenPrize_;
+        tokenQty = tokenQty_;
    }
     function totalSupply() public view returns(uint256){
         return _tokenIds.current();
     }
    function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256){
-
        _tokenIds.increment();
        uint256 newItemId = _tokenIds.current();
       // _tokenToCompany[newItemId] = client;
@@ -45,7 +49,6 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
     function addCompany(address payable client) public onlyOwner{
         amountCash[client] = 0;
     }
-
 
     function transferFromPayable(
         address from,
