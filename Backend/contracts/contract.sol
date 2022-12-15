@@ -11,14 +11,13 @@ import "github.com/provable-things/ethereum-api/provableAPI.sol";
 
 struct deadLine {
     uint64 day;
-    uint16 percetage;
+    uint16 percentage;
 }
 contract myContract is ERC721URIStorage, Ownable,
-    usingProvable  { //este es el nombre del contrato
+    usingProvable  { 
     using Counters for Counters.Counter;
    Counters.Counter private _tokenIds;
    // Its mapping a token to the company
-   mapping(uint256 => address) private _tokenToCompany;
    address payable private ownerAddress;
    uint32 private tokenPrize;
    uint32 private tokenQty;
@@ -32,9 +31,10 @@ contract myContract is ERC721URIStorage, Ownable,
    constructor(uint32 tokenPrize_, uint32 tokenQty_ ,deadLine[] memory deadLinesList_) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
         // poder mandarle los fondos que obtuvieron de las tranferencias.
+        hasComplied = 0;
         tokenPrize = tokenPrize_;
         tokenQty = tokenQty_;
-        deadLineList = deadLinesList_
+        deadLineList = deadLinesList_;
         ownerAddress = payable(msg.sender);
     }
 
@@ -61,7 +61,7 @@ contract myContract is ERC721URIStorage, Ownable,
         else{
             //TODO chequear tema decimales
             //transfer(ownerAddress, balance * deadlineList[index].percentage) * (10 ** 2))
-            uint256 toTransfer = (deadLineList[index].percetage * balance) / 100;
+            uint256 toTransfer = (deadLineList[index].percentage * balance) / 100;
             ownerAddress.transfer(toTransfer);
             balance -= toTransfer;
             index++;
