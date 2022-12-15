@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 import "github.com/provable-things/ethereum-api/provableAPI.sol";
 
-struct deadLines {
+struct deadLine {
     uint64 day;
     uint16 percetage;
 }
@@ -21,13 +21,17 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
    address payable private ownerAddress;
    uint32 private tokenPrize;
    uint32 private tokenQty;
+   deadLine[] private deadLineList;
+   uint16 index;
 
-   constructor(uint32 tokenPrize_, uint32 tokenQty_ ) ERC721("NFT", "ENFT") {
+   constructor(uint32 tokenPrize_, uint32 tokenQty_ ,deadLine[] memory deadLinesList_) ERC721("NFT", "ENFT") {
         // Lo que haga es obtener la address de quien creo el contrato para luego
         // poder mandarle los fondos que obtuvieron de las tranferencias.
         ownerAddress = payable(msg.sender);
         tokenPrize = tokenPrize_;
         tokenQty = tokenQty_;
+        deadLineList = deadLinesList_;
+        index = 0;
    }
     function totalSupply() public view returns(uint256){
         return _tokenIds.current();
