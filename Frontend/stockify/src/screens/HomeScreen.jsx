@@ -1,10 +1,6 @@
-import './LogIn.css';
-import './app.css';
 import Web3 from "web3";
-import React from 'react';
 
-function LogIn() {
-
+export default function HomeScreen() {
     const web3 = new Web3(Web3.givenProvider || "http://localhost:8080");
 
     async function loadBlockChain() {
@@ -17,16 +13,12 @@ function LogIn() {
 
         //TODO: routear a proxima pantalla
     }
-
-
     return (
         <div className="App">
-            <header className="App-header">
-                <h1 className="App-title">Stockify</h1>
-                <button onClick={()=>loadBlockChain()}>Log in</button>
-            </header>
-        </div>
-    );
+        <header className="App-header">
+            <h1 className="Title">Stockify</h1>
+            <button onClick={()=>loadBlockChain()}>Log in</button>
+        </header>
+    </div>
+    )
 }
-
-export default LogIn;
