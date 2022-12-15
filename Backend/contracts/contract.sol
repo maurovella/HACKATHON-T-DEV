@@ -23,6 +23,8 @@ contract myContract is ERC721URIStorage, Ownable,
    uint32 private tokenPrize;
    uint32 private tokenQty;
    deadLine[] private deadLineList;
+   uint16 private index;
+   uint256 private balance;
    uint16 index;
    event LogObjectiveQuery(string description);
    uint64 hasComplied;
@@ -40,25 +42,32 @@ contract myContract is ERC721URIStorage, Ownable,
         return _tokenIds.current();
     }
 
-    function mintNFT(address recipient, string memory tokenURI)
-        public
-        onlyOwner
-        returns (uint256)
-    {
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
-        // _tokenToCompany[newItemId] = client;
-        _mint(recipient, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-        return newItemId;
-    }
-
+   function mintNFT(address recipient, string memory tokenURI) public payable returns (uint256){
+        require(msg.balance == tokenPrize);
+        balance += msg.balance;
+       _tokenIds.increment();
+       uint256 newItemId = _tokenIds.current();
+       _mint(recipient, newItemId);
+       _setTokenURI(newItemId, tokenURI);
+       return newItemId;
+   }
     //the owner can withdraw from the contract because payable was added to the state variable above
-    function withdraw(uint256 _amount) public onlyOwner {
-        ownerAddress.transfer(_amount);
+    function withdraw (uint _amount) public onlyOwner {
+        require(msg.sender <= balance);
+        require(deadLineList[index].day <= block.timestamp);
+        if(index == deadLineList.length - 1)
+            ownerAddress.transfer(balance);
+            balance = 0;
+        else{
+            //TODO chequear tema decimales
+            //transfer(ownerAddress, balance * deadlineList[index].percentage) * (10 ** 2))
+            uint256 toTransfer = (deadLineList[index].percetage * balance) / 100;
+            ownerAddress.transfer(toTransfer);
+            balance -= toTransfer;
+            index++;
+        }
+
     }
-
-
 
     function transferFromPayable(
         address from,
@@ -93,4 +102,5 @@ contract myContract is ERC721URIStorage, Ownable,
         hasComplied = parseInt(_result, 1); // el result es lo que obtuvo del query
         // Now do something with the USD Diesel price...
     }
+
 }
