@@ -7,18 +7,19 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
-
-
+struct deadLines {
+    uint64 day;
+    uint16 percetage;
+}
 contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contrato
     using Counters for Counters.Counter;
    Counters.Counter private _tokenIds;
-   mapping( address  => uint256 ) private amountCash;
    // Its mapping a token to the company
    mapping(uint256 => address) private _tokenToCompany;
    address payable private ownerAddress;
+    uint256 contractCash;
    constructor() ERC721("NFT", "ENFT") {
-        // Lo que haga es obtener la address de quien creo el contrato para luego
-        // poder mandarle los fondos que obtuvieron de las tranferencias.
+        // Recinbimos la billetera del cliente para luego que pueda claimear la plata
         ownerAddress = payable(msg.sender);
    }
     function totalSupply() public view returns(uint256){
@@ -28,37 +29,23 @@ contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contr
 
        _tokenIds.increment();
        uint256 newItemId = _tokenIds.current();
-      // _tokenToCompany[newItemId] = client;
        _mint(recipient, newItemId);
        _setTokenURI(newItemId, tokenURI);
        return newItemId;
    }
     //the owner can withdraw from the contract because payable was added to the state variable above
     function withdraw (uint _amount) public onlyOwner {
+        require(msg.sender <= contractCash)
         ownerAddress.transfer(_amount);
     }
     //to.transfer works because we made the address above payable.
     function transferAll() public payable  {
 
-        payable(msg.sender).transfer(amountCash[msg.sender]);
+        payable(msg.sender).transfer(contractCash);
     }
-    function addCompany(address payable client) public onlyOwner{
-        amountCash[client] = 0;
-    }
+   
 
 
-    function transferFromPayable(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public   payable{
-        // Digo cuando tienen que pagar para transferirla
-        require(msg.value > 3 ether);
-
-        //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
-        amountCash[_tokenToCompany[tokenId]] += msg.value;
-        _transfer(from, to, tokenId);
-    }
+   
 
 }
