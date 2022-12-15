@@ -7,9 +7,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
+import "github.com/provable-things/ethereum-api/provableAPI.sol";
 
 
-contract myContract is ERC721URIStorage, Ownable { //este es el nombre del contrato
+contract myContract is ERC721URIStorage, Ownable, usingProvable { //este es el nombre del contrato
     using Counters for Counters.Counter;
    Counters.Counter private _tokenIds;
    mapping( address  => uint256 ) private amountCash;
