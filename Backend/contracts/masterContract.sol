@@ -46,7 +46,10 @@ contract myMaster {
     }
 
     function buyToken(address beneficiaryAddress) public payable{
-        // hay que hacer require del msg.value? (probablemente si)
+        
+        require( beneficiaryAddress != address(0) );
+        require( mapProjectData[beneficiaryAddress].project != address(0) );
+        require(msg.value > 0);
         require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
 
         IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
