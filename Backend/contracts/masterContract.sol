@@ -29,6 +29,8 @@ contract myMaster {
         require(mapProjectData[beneficiaryAdress].canClaim );
 
         uint256 amount = (mapProjectData[beneficiaryAdress].balance * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
+        IProject(mapProjectData[beneficiaryAdress].project).burnFrom(msg.sender,mapProjectData[beneficiaryAdress].balance);
+        mapProjectData[beneficiaryAdress].balance = 0;
         Address.sendValue(payable(msg.sender), amount);
     }
 
@@ -39,7 +41,7 @@ contract myMaster {
 
         mapProjectData[beneficiaryAddress].project = ERC20Address;
         mapProjectData[beneficiaryAddress].balance = 0;
-        mapProjectData[beneficiaryAddress].duration = duration;
+        mapProjectData[beneficiaryAddress].duration = duration*1000*60*60*24;
         mapProjectData[beneficiaryAddress].start = block.timestamp;
         mapProjectData[beneficiaryAddress].canClaim = false;
 
@@ -59,10 +61,13 @@ contract myMaster {
 
         mapProjectData[beneficiaryAddress].balance += msg.value;
     }
+    function getBalance(address beneficiaryAddress) public view returns(uint256){
+        return IProject(mapProjectData[beneficiaryAddress].project).balanceOf(address(this));
+    }
 
     // TODO podria ser mas facil si releaseEth recibe el address del proyecto solamente
     // y se fija si msg.sender es el beneficiary
-    function releaseEth( address payable beneficiaryAddress ) public {
+    function checkRelease( address payable beneficiaryAddress ) public {
         require( beneficiaryAddress != address(0) );
         require( mapProjectData[beneficiaryAddress].project != address(0) );
         // if (canClaim(beneficiaryAddress)) -> send seria mas simple el codigo (y hacer la funcion canClaim internal)

@@ -9,5 +9,5 @@ export const CHAINID = ENV === "PROD" ? CHAINID_MAIN : CHAINID_MUMBAI;
 export const CHAINNAME = ENV === "PROD" ? "Polygon Mainnet" : "Polygon Testnet";
 
 export const ProjectManagerAddress_PROD = "0x"
-export const ProjectManagerAddress_DEV  = "0x"
+export const ProjectManagerAddress_DEV  = "0x5836bE3a29c055dd36A169dd1803f5240654d0Be"
 export const ProjectManagerAddress = ENV === "PROD" ? ProjectManagerAddress_PROD : ProjectManagerAddress_DEV;

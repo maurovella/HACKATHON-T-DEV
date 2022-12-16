@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IProject.sol";
+import "hardhat/console.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
     uint256 private equityValue;
@@ -35,6 +36,10 @@ contract ProjectToken is ERC20, IProject, Ownable {
 
     function getEquityValue() public view returns(uint256){
         return equityValue;
+    }
+
+    function burnFrom(address account, uint256 amount) public onlyOwner {
+        _burn(account, amount);
     }
 
 }
