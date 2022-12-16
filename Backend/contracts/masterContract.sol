@@ -57,13 +57,15 @@ contract myMaster {
         mapProjectData[beneficiaryAddress].balance += msg.value;
     }
 
-
+    // TODO podria ser mas facil si releaseEth recibe el address del proyecto solamente
+    // y se fija si msg.sender es el beneficiary
     function releaseEth( address payable beneficiaryAddress ) public {
         require( beneficiaryAddress != address(0) );
         require( mapProjectData[beneficiaryAddress].project != address(0) );
-        if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+        // if (canClaim(beneficiaryAddress)) -> send seria mas simple el codigo (y hacer la funcion canClaim internal)
+        if ( block.timestamp > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
             //aca va el oraculo
-            if(true){
+            if(oracle()){
                 //TODO: chequeo de permisos
                 Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].balance);
             }else {
@@ -72,5 +74,7 @@ contract myMaster {
         }
     }
 
-
+    function oracle() public view returns (bool){
+        return true;
+    }
 }
