@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IProject.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
-    address mainContract;
     uint32 private equityValue;
     uint8 private equity;
     address private beneficiary;
