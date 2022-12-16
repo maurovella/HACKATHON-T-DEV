@@ -5,6 +5,7 @@
 //-lockear el withdraw de los contratos hasta cierto timestamp
 pragma solidity ^0.8.9;
 import "./IProject.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract myMaster {
 
@@ -34,42 +35,46 @@ contract myMaster {
     // Recibir el address del ERC20 como parametro, que lo deployee otro
     function createProject(address beneficiaryAddress,
                             address ERC20Address,
-                            uint64 duration,
-                            uint64 start ) public {
+                            uint64 duration) public {
 
         mapProjectData[beneficiaryAddress].project = ERC20Address;
         mapProjectData[beneficiaryAddress].balance = 0;
         mapProjectData[beneficiaryAddress].duration = duration;
-        mapProjectData[beneficiaryAddress].start = start;
+        mapProjectData[beneficiaryAddress].start = block.timestamp;
         mapProjectData[beneficiaryAddress].canClaim = false;
         //TODO check amount
     }
 
     function buyToken(address beneficiaryAddress) public payable{
         
-        require( beneficiaryAddress != address(0) );
-        require( mapProjectData[beneficiaryAddress].project != address(0) );
+        require( beneficiaryAddress != address(0),"1" );
+        require( mapProjectData[beneficiaryAddress].project != address(0),"2" );
         require(msg.value > 0);
-        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
+        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value),"3");
 
         IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
         mapProjectData[beneficiaryAddress].balance += msg.value;
     }
 
-
+    // TODO podria ser mas facil si releaseEth recibe el address del proyecto solamente
+    // y se fija si msg.sender es el beneficiary
     function releaseEth( address payable beneficiaryAddress ) public {
         require( beneficiaryAddress != address(0) );
         require( mapProjectData[beneficiaryAddress].project != address(0) );
-        if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+        // if (canClaim(beneficiaryAddress)) -> send seria mas simple el codigo (y hacer la funcion canClaim internal)
+        if ( block.timestamp > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
             //aca va el oraculo
-            if(true){
-                beneficiaryAddress.transfer(mapProjectData[beneficiaryAddress].balance);
+            if(oracle()){
+                //TODO: chequeo de permisos
+                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].balance);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }
         }
     }
 
-
+    function oracle() public view returns (bool){
+        return true;
+    }
 }
