@@ -7,12 +7,26 @@ export default function NavBar() {
     const connectWallet = () => {
         ConnectToWallet()
             .then(() => toast.success("Connected to wallet successfully"))
-            .catch(err => toast.error("Error while connecting to wallet!\nTry again"))
+            .catch(err => {
+                switch(err.code) {
+                    case 0:
+                        toast.error("Error! Please install a wallet!")
+                        break;
+                    case 4001: // User rejected the request
+                        toast.error("Please accept the request for switching to Polygon")
+                        break;
+                    default:
+                        toast.error("Error while connecting to wallet!\nTry again")
+                        break;
+
+                }                
+            })
     }
     return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
-                <span className="navbar-brand me-auto" href="#">
+                <span className="navbar-brand me-auto" href="#">Stockify</span>
+                <span className="navbar-brand me-right" href="#">
                     {/* TODO CHANGE THIS*/}
                     {
                         isConnected

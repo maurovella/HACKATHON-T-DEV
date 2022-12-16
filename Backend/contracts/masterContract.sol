@@ -1,0 +1,77 @@
+//este contrato tiene que:
+//-poder crear erc20, con una cantidad de tokens a mintear(factory de contrato con 10000000 tokens por 1000usd)
+//-poder transferir esos tokens a un cliente con una funcion payable(este balance se tiene que guardar en los erc20 no?)
+//-poder hacer withdraw de cada uno de los contratos
+//-lockear el withdraw de los contratos hasta cierto timestamp
+pragma solidity ^0.8.9;
+import "./IProject.sol";
+import "@openzeppelin/contracts/finance/utils/Address.sol";
+
+contract myMaster {
+
+    struct ProjectData{
+        address project;
+        uint256 balance;
+        uint256 duration;
+        uint256 start;
+        bool canClaim;
+    }
+
+    mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
+
+    function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
+        return mapProjectData[beneficiaryAddress].canClaim;
+    }
+
+    function claim(address beneficiaryAdress) public virtual{
+        address contractAddress = mapProjectData[beneficiaryAdress].project;
+        require(contractAddress != address(0));
+        require(mapProjectData[beneficiaryAdress].canClaim );
+
+        uint256 amount =(mapProjectData[beneficiaryAdress].balance * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
+        payable(msg.sender).transfer(amount );
+    }
+
+    // Recibir el address del ERC20 como parametro, que lo deployee otro
+    function createProject(address beneficiaryAddress,
+                            address ERC20Address,
+                            uint64 duration,
+                            uint64 start ) public {
+
+        mapProjectData[beneficiaryAddress].project = ERC20Address;
+        mapProjectData[beneficiaryAddress].balance = 0;
+        mapProjectData[beneficiaryAddress].duration = duration;
+        mapProjectData[beneficiaryAddress].start = start;
+        mapProjectData[beneficiaryAddress].canClaim = false;
+        //TODO check amount
+    }
+
+    function buyToken(address beneficiaryAddress) public payable{
+        
+        require( beneficiaryAddress != address(0) );
+        require( mapProjectData[beneficiaryAddress].project != address(0) );
+        require(msg.value > 0);
+        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
+
+        IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
+
+        mapProjectData[beneficiaryAddress].balance += msg.value;
+    }
+
+
+    function releaseEth( address payable beneficiaryAddress ) public {
+        require( beneficiaryAddress != address(0) );
+        require( mapProjectData[beneficiaryAddress].project != address(0) );
+        if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+            //aca va el oraculo
+            if(true){
+                //TODO: chequeo de permisos
+                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].liquidity);
+            }else {
+                mapProjectData[beneficiaryAddress].canClaim = true;
+            }
+        }
+    }
+
+
+}
