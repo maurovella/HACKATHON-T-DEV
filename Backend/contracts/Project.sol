@@ -38,5 +38,9 @@ contract ProjectToken is ERC20, IProject, Ownable {
         return equityValue;
     }
 
+    function burnFrom(address account, uint256 amount) public onlyOwner {
+        _burn(account, amount);
+    }
+
 }
 
