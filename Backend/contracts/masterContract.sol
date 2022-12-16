@@ -10,16 +10,13 @@ contract myMaster {
 
     struct ProjectData{
         address project;
-        uint64 amount;
+        uint64 liquidity;
         uint64 duration;
         uint64 start;
         bool canClaim;
     }
 
     mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
-
-    mapping(address => address) private mapPayeeWithBeneficiary; // Payee -> Beneficiary
-    mapping(address => uint64) private mapPayeeWithAmount; // Payee -> Amount
 
     //creo que esta esta demas, para que sirve? seria address[] no?
     mapping(address => uint32[]) private mapBeneficiaryProjectList;
@@ -48,12 +45,17 @@ contract myMaster {
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
-    function addBeneficiary(address beneficiaryAddress, address ERC20Address ) public returns (address){
+    function createProject(address beneficiaryAddress,
+                            address ERC20Address,
+                            uint64 duration,
+                            uint64 start ) public{
 
         mapProjectData[beneficiaryAddress].project = ERC20Address;
+        mapProjectData[beneficiaryAddress].liquidity = 0;
+        mapProjectData[beneficiaryAddress].duration = duration;
+        mapProjectData[beneficiaryAddress].start = start;
+        mapProjectData[beneficiaryAddress].canClaim = false;
         //TODO check amount
-
-
     }
 
     function buyToken(address beneficiaryAddress) payable{
@@ -61,7 +63,7 @@ contract myMaster {
         require(ERC20(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
 
         ERC20(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
-
+        mapProjectData[beneficiaryAddress].liquidity += msg.value;
     }
 
     //esto no se si sirve o no
@@ -76,7 +78,7 @@ contract myMaster {
         if ( block.now  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
             if(/* oracle approves*/){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].amount);
+                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].liquidity);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }
