@@ -17,17 +17,18 @@ export default class EtherHelper {
 
     async createProject(metadata) {
         const signer = this.etherProvider.getSigner()
+        const signerAddress = await signer.getAddress()
         const Project = new ethers.ContractFactory(Project_sol.ABI, Project_sol.bytecode, signer)
         
         return new Promise(async (resolve, reject) => {
-            await Project.deploy(
-                signer.address, ProjectManagerAddress, 
+            const project = await Project.deploy(
+                signerAddress, ProjectManagerAddress, 
                 metadata.name, metadata.symbol, metadata.premint, metadata.equityValue, metadata.equity)
                 .catch(err => reject(err))
-            await Project.deployed()
+            await project.deployed()
                 .catch(err => reject(err))
-            const ProjectManager = ethers.Contract(ProjectManagerAddress, ProjectManager_sol.ABI, signer)
-            await ProjectManager.createProject(signer.address, Project.address, metadata.duration)
+            const ProjectManager = new ethers.Contract(ProjectManagerAddress, ProjectManager_sol.ABI, signer)
+            await ProjectManager.createProject(signerAddress, project.address, metadata.duration,  {gasLimit: 50000})
                     .then(() => resolve())
                     .catch(err => reject(err))
         })

@@ -5,11 +5,19 @@ import { toast } from 'react-hot-toast';
 
 export default function SellScreen() {
     const { EtherHelper } = useEtherContext()
+    const form_tpl = {  // Entries template
+      name: "pelote",
+      symbol: "PEL",
+      premint: 0xff,
+      equityValue: 0xff,
+      equity: 50,
+      duration: 16712,
+    }
     const mint = e => {
       e.preventDefault();
       const form = new FormData(e.target)
       const entries = Object.fromEntries(form)
-      const promise = EtherHelper.createProject(entries);
+      const promise = EtherHelper.createProject();
       toast.promise(
         promise,
         {
