@@ -3,6 +3,8 @@
 //-poder transferir esos tokens a un cliente con una funcion payable(este balance se tiene que guardar en los erc20 no?)
 //-poder hacer withdraw de cada uno de los contratos
 //-lockear el withdraw de los contratos hasta cierto timestamp
+pragma solidity ^0.8.9;
+import "./IProject.sol";
 
 contract myMaster {
 
