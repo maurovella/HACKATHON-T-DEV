@@ -1,10 +1,7 @@
-import { ENV, RPC_MAIN, RPC_MUMBAI, CHAINID_MAIN, CHAINID_MUMBAI} from "../contants";
+import { RPC_URL, CHAINID, CHAINNAME } from "../contants";
 import web3 from "web3";
 import toast from 'react-hot-toast';
 
-const RPC_URL = ENV == "PROD" ? RPC_MAIN : RPC_MUMBAI;
-const CHAINID = ENV == "PROD" ? CHAINID_MAIN : CHAINID_MUMBAI;
-const CHAINNAME = ENV == "PROD" ? "Polygon Mainnet" : "Polygon Testnet";
 function switchChain(ether){
   return new Promise((resolve, reject) => {
     ether.request({
@@ -35,7 +32,6 @@ function switchChain(ether){
   
 }
 
-
 export const getEther = () => {
     return new Promise(async (resolve, reject) => {
       let ether = window.ethereum || window.web3;
@@ -45,7 +41,8 @@ export const getEther = () => {
         reject({code: 0, message: "Please install a wallet"})
       }
 
-      if (ether.networkVersion !== CHAINID) { // if the chain its not polygon, switch
+      if (ether.networkVersion != CHAINID) { // if the chain its not polygon, switch
+        console.log(ether.networkVersion, "PELOTE")
         try {
           await toast.promise(
             switchChain(ether),
