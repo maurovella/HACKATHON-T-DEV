@@ -54,11 +54,13 @@ contract myMaster {
         require( beneficiaryAddress != address(0),"1" );
         require( mapProjectData[beneficiaryAddress].project != address(0),"2" );
         require(msg.value > 0);
-        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value),"3");
 
         IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
         mapProjectData[beneficiaryAddress].balance += msg.value;
+    }
+    function getBalance(address beneficiaryAddress) public view returns(uint256){
+        return IProject(mapProjectData[beneficiaryAddress].project).balanceOf(address(this));
     }
 
     // TODO podria ser mas facil si releaseEth recibe el address del proyecto solamente
