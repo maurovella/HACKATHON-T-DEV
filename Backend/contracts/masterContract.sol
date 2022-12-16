@@ -32,19 +32,19 @@ contract myMaster {
     //     return mapContractData[contractAddress].beneficiary;
     // }
 
-    function canClaim(address beneficiaryAddress) public view virtual returns (uint256) {
+    function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
         return mapProjectData[beneficiaryAddress].canClaim;
     }
 
     function claim() public virtual{
-        address contractAddress = mapPayeeWithContract[msg.sender];
+        address contractAddress = mapProjectData[msg.sender].project;
         require(contractAddress != address(0));
-        require(canClaim(contractAddress));
+        require(mapProjectData[msg.sender].canClaim );
         uint64 amount = mapPayeeWithAmount[msg.sender];
 
-        delete mapPayeeWithContract[msg.sender];
         delete mapPayeeWithAmount[msg.sender];
-        Address.sendValue(payable(msg.sender), amount);
+        
+        payable(msg.sender).transfer( amount);
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
@@ -56,11 +56,11 @@ contract myMaster {
 
     }
 
-    function buyToken(address beneficiaryAddress) payable{
+    function buyToken(address beneficiaryAddress) public payable{
         // hay que hacer require del msg.value? (probablemente si)
-        require(ERC20(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
+        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
 
-        ERC20(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
+        IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
     }
 
@@ -72,11 +72,11 @@ contract myMaster {
     //     SafeERC20.safeTransfer(IERC20(token), beneficiary(), amount);
     // }
 
-    function releaseEth(address beneficiaryAddress) public {
-        if ( block.now  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
-            if(/* oracle approves*/){
+    function releaseEth( address payable beneficiaryAddress ) public {
+        if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+            if(true){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].amount);
+                beneficiaryAddress.transfer( mapProjectData[beneficiaryAddress].amount);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }
