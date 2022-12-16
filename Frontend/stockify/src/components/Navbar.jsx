@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Toolbar from './Toolbar.js';
 import Button from '@mui/material/Button';
+import {useNavigate} from "react-router-dom";
+
 
 const AppAppBarStyle = {
     backgroundColor: '#0000000',
@@ -14,6 +16,8 @@ const AppAppBarStyle = {
 
 export default function NavBar() {
     const { isConnected, DisconectWallet, ConnectToWallet } = useEtherContext();
+
+    const navigate = useNavigate();
 
     const connectWallet = () => {
         ConnectToWallet()
@@ -39,10 +43,10 @@ export default function NavBar() {
             <Toolbar sx={{ justifyContent: 'space-between' }}>
                     <h1 href="#">Stockify</h1>
                     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
-                        <Button variant="text" sx={{color: 'white'}} >Buy</Button>
+                        <Button variant="text" sx={{color: 'white'}} onClick={() => navigate("/projects/0")}>Buy</Button>
                     </Box>
                     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
-                        <Button variant="text" sx={{color: 'white'}} >Sell </Button>
+                        <Button variant="text" sx={{color: 'white'}} onClick={() => navigate("/sell")}>Sell </Button>
                     </Box>
                     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
                     {/* TODO CHANGE THIS*/}
