@@ -10,6 +10,7 @@ contract ProjectToken is ERC20, IProject, Ownable {
     uint8 private equity;
     address private beneficiary;
     bool public hasComplied;
+    
     constructor(address _beneficiary, address _mainContract, string memory _name, string memory _symbol, uint32 _premint, uint256 _equityValue, uint8 _equity) ERC20(_name, _symbol) {
         require(_equity > 0 && _equity < 100, "Percentage not valid 100<%<0");
         _mint(_mainContract, _premint * 10 ** decimals());
@@ -23,7 +24,7 @@ contract ProjectToken is ERC20, IProject, Ownable {
         return _equityValue / this.totalSupply();
     }
 
-    function canTransfer(uint256 value) public view returns (bool){
+    function  canTransfer(uint256 value) public override view returns (bool){
         return calcTokens(value)<=this.totalSupply();
     }
 

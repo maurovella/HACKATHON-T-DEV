@@ -14,25 +14,42 @@ describe("Token contract", function () {
      contractAddress1 = txReceipt.contractAddress;
 
      Token2 = await ethers.getContractFactory("ProjectToken",owner);
-     hardhatToken2 = await Token2.deploy(owner,contractAddress1,"name","MBT",1000,100000,10);
+     hardhatToken2 = await Token2.deploy(owner.address,contractAddress1,"name","MBT",1000,1000,10);
      hardhatToken2.deployed();
      txHash2 =await hardhatToken2.deployTransaction.hash;
-     txReceipt2 = await ethers.provider.waitForTransaction(txHash);
+     txReceipt2 = await ethers.provider.waitForTransaction(txHash2);
      contractAddress2 = txReceipt2.contractAddress;
      
   } )
  
-//  it("Deployment should assign the total supply of tokens to the owner", async function () {
-//     const ownerBalance = await hardhatToken.balanceOf(owner.address);
-//     const totalSupply = await hardhatToken.totalSupply();
-//     expect(Number(totalSupply)).to.equal(Number(ownerBalance));
-//   }); 
-//   it("Mint nft Test", async function() {
-//     const [addr1] = await ethers.getSigners();
-//     const tokenId = await Token.attach(contractAddress).mintNFT(addr1.address , META_DATA_URL,addr1.address);
-//     const totalSupply = await Token.attach(contractAddress).totalSupply();
-//    // await console.log(Number(await Token.attach(contractAddress).balanceOf(addr1.address)));
-//     expect(Number(await Token.attach(contractAddress).balanceOf(addr1.address))).to.equal(1)
+ it("Deployment should assign the total supply of tokens to the owner", async function () {
+    const ownerBalance = await hardhatToken2.balanceOf(contractAddress1);
+    const totalSupply = await hardhatToken2.totalSupply();
+    expect(Number(totalSupply)).to.equal(Number(ownerBalance));
+  }); 
+
+  it("Clients should be able to buy tokens from company and have them assigned", async function() {//Mint nft Test
+        const [owner,addr1] = await ethers.getSigners();
+        // await console.log(Number(await Token.attach(contractAddress).balanceOf(addr1.address)));
+        await hardhatToken.createProject(owner.address,contractAddress2,100)
+        console.log(contractAddress2)
+        console.log(await hardhatToken.getProject(owner.address))
+        await hardhatToken.connect(addr1).buyToken(owner.address,{
+                value: ethers.utils.parseEther("30.0"),
+                
+            });
+        
+        expect(Number(await hardhatToken2.balanceOf(addr1.address))).to.equal(30)
+  
+//    const contractBalance = await ethers.provider.getBalance(hardhatToken1.address);
+//    let price = ethers.utils.formatUnits(contractBalance.toString(), "ether");
+//    console.log(price)
+   // Lo que quiero ahora es obtener ese ethereum
+//    const ownerBalance = await ethers.provider.getBalance(owner.address);
+//    let ownerPrice = ethers.utils.formatUnits(ownerBalance.toString(), "ether");
+   });
+
+  
    
 //   });
 //   it("No owner mint",async function(){
