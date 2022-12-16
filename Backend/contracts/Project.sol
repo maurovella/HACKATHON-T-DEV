@@ -5,8 +5,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IProject.sol";
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
+   
     uint256 private equityValue;
     uint8 private equity;
     address private beneficiary;
