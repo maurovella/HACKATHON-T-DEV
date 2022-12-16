@@ -1,6 +1,7 @@
 import { useEtherContext } from '../contexts/EtherContext';
 import styled from 'styled-components';
 import {TextField, InputAdornment, Button, Container } from "@mui/material";
+import { toast } from 'react-hot-toast';
 
 export default function SellScreen() {
     const { EtherHelper } = useEtherContext()
@@ -8,8 +9,14 @@ export default function SellScreen() {
       e.preventDefault();
       const form = new FormData(e.target)
       const entries = Object.fromEntries(form)
-      console.log(entries)
-      EtherHelper.createProject(entries);
+      const promise = EtherHelper.createProject(entries);
+      toast.promise(
+        promise,
+        {
+          loading: "Deploying project token contract...",
+          success: <b>Congratulations token deployed!</b>,
+          error: <b>Error while deploying project token contract 👾 </b>
+        })
     }
     return (
         <Wrapper>

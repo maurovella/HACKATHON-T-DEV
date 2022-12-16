@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { RPC_URL, ProjectManagerAddress } from "../contants";
 
 import Project_sol from "./contracts/Project.json"
-
+import ProjectManager_sol from "./contracts/ProjectManager.json"
 
 export default class EtherHelper {
     constructor (web3Provider = null) {
@@ -24,9 +24,12 @@ export default class EtherHelper {
                 signer.address, ProjectManagerAddress, 
                 metadata.name, metadata.symbol, metadata.premint, metadata.equityValue, metadata.equity)
                 .catch(err => reject(err))
-            Project.deployed()
-                .then(() => resolve(Project))
+            await Project.deployed()
                 .catch(err => reject(err))
+            const ProjectManager = ethers.Contract(ProjectManagerAddress, ProjectManager_sol.ABI, signer)
+            await ProjectManager.createProject(signer.address, Project.address, metadata.duration)
+                    .then(() => resolve())
+                    .catch(err => reject(err))
         })
     }
 }
