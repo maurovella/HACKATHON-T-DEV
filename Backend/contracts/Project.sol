@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IProject.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
-    uint32 private equityValue;
+    uint256 private equityValue;
     uint8 private equity;
     address private beneficiary;
     bool public hasComplied;
-    constructor(address _beneficiary, address _mainContract, string memory _name, string memory _symbol, uint32 _premint, uint32 _equityValue, uint8 _equity) ERC20(_name, _symbol) {
+    constructor(address _beneficiary, address _mainContract, string memory _name, string memory _symbol, uint32 _premint, uint256 _equityValue, uint8 _equity) ERC20(_name, _symbol) {
         require(_equity > 0 && _equity < 100, "Percentage not valid 100<%<0");
         _mint(_mainContract, _premint * 10 ** decimals());
         equityValue = _equityValue;
@@ -36,7 +36,7 @@ contract ProjectToken is ERC20, IProject, Ownable {
         return beneficiary;
     }
 
-    function getEquityValue() public view returns(uint32){
+    function getEquityValue() public view returns(uint256){
         return equityValue;
     }
 
