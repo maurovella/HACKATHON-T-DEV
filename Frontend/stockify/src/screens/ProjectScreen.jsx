@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import {Button} from "@mui/material";
+import AmountButtons from '../components/AmountButtons';
 
 export default function ProjectScreen() {
     const { projectId } = useParams();
@@ -49,11 +50,7 @@ export default function ProjectScreen() {
                 <Grid item xs={6} className="container2">
                     <h3 className="floating-text">Buy {projectName} stock now!</h3>
                     <div className="container">
-                        <Button className="button2" onClick={() => handleDown() }>-</Button>
-                        <div className="box">
-                            <p className="center-text">{selectedStock}</p>
-                        </div>
-                        <Button className="button3" onClick={() => handleUp()}>+</Button>
+                      <AmountButtons increase={handleUp} decrease={handleDown} amount={selectedStock}/>
                     </div>
                     <Button className="button" variant="contained">Buy</Button>
                     <h5 className="floating-text">Available shares: {availableStock}</h5>
