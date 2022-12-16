@@ -5,15 +5,19 @@
 //-lockear el withdraw de los contratos hasta cierto timestamp
 
 contract myMaster {
+
+    struct contractData{
+        address beneficiary;
+        uint64 amount;
+        uint64 duration;
+        uint64 start;
+        bool canClaim;
+    }
+
+    mapping(address => contractData) private mapContractData;
+
     mapping(address => address) private mapPayeeWithContract; // Payee -> Contract
     mapping(address => uint64) private mapPayeeWithAmount; // Payee -> Amount
-    mapping(address => bool) private mapContractWithCanClaim ; // can claim
-
-    mapping(address => uint64) private mapContractToAmount; // ProjectID -> Amount
-    mapping(address => uint64) private mapContractToDuration; // ProjectID -> Duration
-    mapping(address => uint64) private mapContractToStart //  ProjectID -> Start
-
-    mapping(address => address) private mapContractToBeneficiary; // ProjectID -> OwnerAddress
 
     //creo que esta esta demas, para que sirve? seria address[] no?
     mapping(address => uint32[]) private mapBeneficiaryProjectList;
@@ -23,11 +27,11 @@ contract myMaster {
     }
 
     function beneficiary(address contractAddress) public view virtual returns (address) {
-        return mapContractToBeneficiary[contractAddress];
+        return mapContractData[contractAddress].beneficiary;
     }
 
     function canClaim(address contractAddress) public view virtual returns (uint256) {
-        return mapContractWithCanClaim[contractAddress];
+        return mapContractData[contractAddress].canClaim;
     }
 
     function claim() public virtual{
@@ -47,7 +51,7 @@ contract myMaster {
         //que devuelve un erc20 ? a que lo quisieron mappear aca? estos mappings estan al reves
         mapProjectIdxToAddress[address] = New erc20();
 
-        mapContractToBeneficiary[address] = ERC20(address).getBeneficiary();
+        mapContractData[address].beneficiary = ERC20(address).getBeneficiary();
         //TODO check amount
 
 
@@ -74,12 +78,12 @@ contract myMaster {
     }
 
     function releaseEth(address contractAddress) public {
-        if ( block.now  > mapContractToDuration[contractAddress] + mapContractToStart[contractAddress]){
+        if ( block.now  > mapContractData[contractAddress].duration + mapContractData[contractAddress].start){
             if(/* oracle approves*/){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiary(contractAddress)), mapContractToAmount[contractAddress]);
+                Address.sendValue(payable(beneficiary(contractAddress)), mapContractData[contractAddress].amount);
             }else {
-                mapContractWithCanClaim[contractAddress] = true;
+                mapContractData[contractAddress].canClaim = true;
             }
         }
     }
