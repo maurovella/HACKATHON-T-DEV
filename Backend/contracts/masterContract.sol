@@ -21,10 +21,6 @@ contract myMaster {
     //creo que esta esta demas, para que sirve? seria address[] no?
     mapping(address => uint32[]) private mapBeneficiaryProjectList;
 
-    function deployProject() public {
-
-    }
-
     // function beneficiary(address beneficiaryAddress) public view virtual returns (address) {
     //     return mapContractData[contractAddress].beneficiary;
     // }
@@ -44,7 +40,7 @@ contract myMaster {
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
     function createProject(address beneficiaryAddress,
-                            address ERC20Address,
+                            IERC20 ERC20Address,
                             uint64 duration,
                             uint64 start ) public{
 
