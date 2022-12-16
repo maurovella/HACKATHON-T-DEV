@@ -15,7 +15,7 @@ Vincular a las personas que motivan este tipo de movimiento con la penalización
 Trabajar con un sistema Web3 permite saber perfectamente quien tiene algo que ganar o perder en una empresa, brindando transparencia ética y legal para el sistema. El sistema en general se beneficia de este paradigma ya que resulta en un blanqueo general de una empresa, y la empresa goza de la desvinculación de la responsabilidad de seguir shareholders con intenciones dudosas.
 
 
-¿Tecnología utilizada y funcionalidades desarrolladas
+Tecnología utilizada y funcionalidades desarrolladas
 
 Backend: 
 . Un contrato global que maneja transacciones, pagos y locks de los tokens y de los pagos. 
