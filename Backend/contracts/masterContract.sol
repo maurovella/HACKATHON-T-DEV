@@ -5,7 +5,7 @@
 //-lockear el withdraw de los contratos hasta cierto timestamp
 pragma solidity ^0.8.9;
 import "./IProject.sol";
-import "@openzeppelin/contracts/finance/utils/Address.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract myMaster {
 
@@ -66,7 +66,7 @@ contract myMaster {
             //aca va el oraculo
             if(true){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].liquidity);
+                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].balance);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }

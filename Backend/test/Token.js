@@ -14,7 +14,7 @@ describe("Token contract", function () {
      contractAddress1 = txReceipt.contractAddress;
 
      Token2 = await ethers.getContractFactory("ProjectToken",owner);
-     hardhatToken2 = await Token2.deploy(owner,contractAddress1,"name","MBT",1000,100000,10);
+     hardhatToken2 = await Token2.deploy(owner.address,contractAddress1,"name","MBT",1000,100000,10);
      hardhatToken2.deployed();
      txHash2 =await hardhatToken2.deployTransaction.hash;
      txReceipt2 = await ethers.provider.waitForTransaction(txHash);
@@ -22,11 +22,11 @@ describe("Token contract", function () {
      
   } )
  
-//  it("Deployment should assign the total supply of tokens to the owner", async function () {
-//     const ownerBalance = await hardhatToken.balanceOf(owner.address);
-//     const totalSupply = await hardhatToken.totalSupply();
-//     expect(Number(totalSupply)).to.equal(Number(ownerBalance));
-//   }); 
+ it("Deployment should assign the total supply of tokens to the owner", async function () {
+    const ownerBalance = await hardhatToken2.balanceOf(owner.address);
+    const totalSupply = await hardhatToken2.totalSupply();
+    expect(Number(totalSupply)).to.equal(Number(ownerBalance));
+  }); 
 //   it("Mint nft Test", async function() {
 //     const [addr1] = await ethers.getSigners();
 //     const tokenId = await Token.attach(contractAddress).mintNFT(addr1.address , META_DATA_URL,addr1.address);
