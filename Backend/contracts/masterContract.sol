@@ -8,17 +8,17 @@ import "./IProject.sol";
 
 contract myMaster {
 
-    struct contractData{
-        address beneficiary;
+    struct ProjectData{
+        address project;
         uint64 amount;
         uint64 duration;
         uint64 start;
         bool canClaim;
     }
 
-    mapping(address => contractData) private mapContractData;
+    mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
 
-    mapping(address => address) private mapPayeeWithContract; // Payee -> Contract
+    mapping(address => address) private mapPayeeWithBeneficiary; // Payee -> Beneficiary
     mapping(address => uint64) private mapPayeeWithAmount; // Payee -> Amount
 
     //creo que esta esta demas, para que sirve? seria address[] no?
@@ -28,12 +28,12 @@ contract myMaster {
 
     }
 
-    function beneficiary(address contractAddress) public view virtual returns (address) {
-        return mapContractData[contractAddress].beneficiary;
-    }
+    // function beneficiary(address beneficiaryAddress) public view virtual returns (address) {
+    //     return mapContractData[contractAddress].beneficiary;
+    // }
 
-    function canClaim(address contractAddress) public view virtual returns (uint256) {
-        return mapContractData[contractAddress].canClaim;
+    function canClaim(address beneficiaryAddress) public view virtual returns (uint256) {
+        return mapProjectData[beneficiaryAddress].canClaim;
     }
 
     function claim() public virtual{
@@ -48,41 +48,37 @@ contract myMaster {
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
-    function addBeneficiary(address IERC20 ) public returns (address){
+    function addBeneficiary(address beneficiaryAddress, address ERC20Address ) public returns (address){
 
-        mapContractData[address].beneficiary = ERC20(address).getBeneficiary();
+        mapProjectData[beneficiaryAddress].project = ERC20Address;
         //TODO check amount
 
 
     }
 
-    function buyToken(uint16 adressWallet) payable{
-        //require(msg.value > 4 eth);
-        //necesito calcular el 4% , cuanto representa cada token de la empresa
+    function buyToken(address beneficiaryAddress) payable{
+        // hay que hacer require del msg.value? (probablemente si)
+        require(ERC20(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
 
-        //esta linea no tiene sentido
-        require(ERC20(mapProjectIdxToAddress[adressWallet]).canTransfer(msg.value));
-
-        //Aca debo sumar la plata que tiene la empresa. esta tampoco tiene sentido
-        ERC20(mapProjectIdxToAddress[adressWallet]).transferValue(addressWallet, msg.value);
+        ERC20(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
     }
 
+    //esto no se si sirve o no
+    // function release(IERC20 erc20, uint64 quantity) public virtual {
+    //     uint256 amount = releasable(token);
+    //     _erc20Released[tokenid] += amount;
+    //     emit ERC20Released(token, amount);
+    //     SafeERC20.safeTransfer(IERC20(token), beneficiary(), amount);
+    // }
 
-    function release(IERC20 erc20, uint64 quantity) public virtual {
-        uint256 amount = releasable(token);
-        _erc20Released[tokenid] += amount;
-        emit ERC20Released(token, amount);
-        SafeERC20.safeTransfer(IERC20(token), beneficiary(), amount);
-    }
-
-    function releaseEth(address contractAddress) public {
-        if ( block.now  > mapContractData[contractAddress].duration + mapContractData[contractAddress].start){
+    function releaseEth(address beneficiaryAddress) public {
+        if ( block.now  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
             if(/* oracle approves*/){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiary(contractAddress)), mapContractData[contractAddress].amount);
+                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].amount);
             }else {
-                mapContractData[contractAddress].canClaim = true;
+                mapProjectData[beneficiaryAddress].canClaim = true;
             }
         }
     }
