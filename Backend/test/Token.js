@@ -32,10 +32,10 @@ describe("Token contract", function () {
         const [owner,addr1] = await ethers.getSigners();
         // await console.log(Number(await Token.attach(contractAddress).balanceOf(addr1.address)));
         await hardhatToken.createProject(owner.address,contractAddress2,100)
-        console.log(contractAddress2)
-        console.log(await hardhatToken.getProject(owner.address))
+        console.log(await hardhatToken.getBalance(owner.address))
+
         await hardhatToken.connect(addr1).buyToken(owner.address,{
-                value: ethers.utils.parseEther("30.0"),
+                value: ethers.utils.parseEther("1"),
                 
             });
         

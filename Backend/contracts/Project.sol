@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IProject.sol";
+import "hardhat/console.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
     uint256 private equityValue;
@@ -20,16 +21,17 @@ contract ProjectToken is ERC20, IProject, Ownable {
     }
 
     function calcTokens(uint256 _equityValue) public view returns (uint256){
-        return _equityValue / this.totalSupply();
+        return _equityValue / totalSupply();
     }
 
     function  canTransfer(uint256 value) public override view returns (bool){
-        return calcTokens(value)<=this.totalSupply();
+        return calcTokens(value)<=totalSupply();
     }
 
     function transferValue(address to, uint256 value) public {
-        require (canTransfer(value));
-        this.transfer(to,calcTokens(value));
+        require (canTransfer(value),"4");
+        console.log("%d",value);
+        transfer(to,calcTokens(value));
     }
 
     function getBeneficiary() public view returns (address){
