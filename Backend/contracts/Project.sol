@@ -27,10 +27,9 @@ contract ProjectToken is ERC20, IProject, Ownable {
         return calcTokens(value)<=this.totalSupply();
     }
 
-    function transferValue(address to, uint256 value) public onlyOwner{
+    function transferValue(address to, uint256 value) public {
         require (canTransfer(value));
         this.transfer(to,calcTokens(value));
-
     }
 
     function getBeneficiary() public view returns (address){
