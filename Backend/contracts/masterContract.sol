@@ -12,8 +12,8 @@ contract myMaster {
     struct ProjectData{
         address project;
         uint256 balance;
-        uint32 duration;
-        uint32 start;
+        uint256 duration;
+        uint256 start;
         bool canClaim;
     }
 
@@ -35,7 +35,7 @@ contract myMaster {
     // Recibir el address del ERC20 como parametro, que lo deployee otro
     function createProject(address beneficiaryAddress,
                             address ERC20Address,
-                            uint64 duration) public {
+                            uint256 duration) public {
 
         mapProjectData[beneficiaryAddress].project = ERC20Address;
         mapProjectData[beneficiaryAddress].balance = 0;
