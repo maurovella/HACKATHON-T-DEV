@@ -21,16 +21,16 @@ contract ProjectToken is ERC20, IProject, Ownable {
     }
 
     function calcTokens(uint256 _equityValue) public view returns (uint256){
-        return _equityValue / this.totalSupply();
+        return (_equityValue * totalSupply())/ equityValue;
     }
 
     function  canTransfer(uint256 value) public override view returns (bool){
-        return calcTokens(value)<=this.totalSupply();
+        return true;
     }
 
     function transferValue(address to, uint256 value) public {
         require (canTransfer(value));
-        this.transfer(to,calcTokens(value));
+        transfer(to,calcTokens(value));
     }
 
     function getBeneficiary() public view returns (address){
