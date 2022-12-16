@@ -26,7 +26,6 @@ contract ProjectToken is ERC20, IProject, Ownable {
 
 
     function transferValue(address to, uint256 value) public {
-        require (canTransfer(value));
         transfer(to,calcTokens(value));
     }
 
