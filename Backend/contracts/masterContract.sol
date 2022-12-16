@@ -6,9 +6,10 @@
 pragma solidity ^0.8.9;
 import "./IProject.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-
+import "@openzeppelin/contracts/utils/Counters.sol";
 contract myMaster {
-
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
     struct ProjectData{
         address project;
         uint256 balance;
@@ -18,7 +19,7 @@ contract myMaster {
     }
 
     mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
-
+    mapping(uint256 => address) private mapAddress;
     function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
         return mapProjectData[beneficiaryAddress].canClaim;
     }
@@ -38,7 +39,6 @@ contract myMaster {
     function createProject(address beneficiaryAddress,
                             address ERC20Address,
                             uint256 duration) public {
-
         mapProjectData[beneficiaryAddress].project = ERC20Address;
         mapProjectData[beneficiaryAddress].balance = 0;
         mapProjectData[beneficiaryAddress].duration = duration*1000*60*60*24;
@@ -50,9 +50,10 @@ contract myMaster {
     function getProject(address beneficiaryAddress) public view returns( ProjectData memory){
         return mapProjectData[beneficiaryAddress];
     }
-
+    function getIds() public view returns(uint256){
+        return uint256(_tokenIds.current());
+    }
     function buyToken(address beneficiaryAddress) public payable{
-        
         require( beneficiaryAddress != address(0),"1" );
         require( mapProjectData[beneficiaryAddress].project != address(0),"2" );
         require(msg.value > 0);
@@ -81,6 +82,8 @@ contract myMaster {
             }
         }
     }
+
+    
 
     function oracle() public view returns (bool){
         return true;

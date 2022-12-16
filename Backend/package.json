@@ -8,6 +8,7 @@
     "@openzeppelin/contracts": "^4.8.0",
     "chai": "^4.3.7",
     "dotenv": "^16.0.3",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "provable-eth-api": "^0.5.0-npmfix"
   }
 }
