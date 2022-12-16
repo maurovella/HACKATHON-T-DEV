@@ -53,8 +53,7 @@ body{
 }
 
 .App-image{
-    margin-left: 10%;
-    width: 40%;
+    margin-left: 20%;
 }
 
 .App-text{
@@ -65,7 +64,6 @@ body{
 .App-projecttext{
     color:white;
     text-align: center;
-    margin-left: 15%;
 
 }
 

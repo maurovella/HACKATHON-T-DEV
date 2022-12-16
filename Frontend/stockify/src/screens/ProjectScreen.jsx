@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
 
 import '../app.css'
-import { useEtherContext } from '../contexts/EtherContext';
 import styled from 'styled-components';
-import React from "react";
+import React, {useState} from "react";
 import Grid from "@mui/material/Grid";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -12,11 +11,32 @@ import {Button} from "@mui/material";
 export default function ProjectScreen() {
     const { projectId } = useParams();
 
+
+    const [selectedStock, setSelectedStock] = useState(0);
+    const [availableStock, setAvailableStock] = useState(145);
+    //TODO: get real available number
+
+    const projectName = "Krusty Crab"
+    //TODO: get real name
+
+    const handleUp = () => {
+        if (selectedStock < availableStock){
+            setSelectedStock(selectedStock+1);
+        }
+    }
+
+    const handleDown = () => {
+        if (selectedStock > 0){
+            setSelectedStock(selectedStock-1);
+        }
+    }
+
     return (
         <Wrapper>
         <div>
-            <h3 className="App-title">Krusty Crab</h3>
-                <div className="container">
+            <h2 className="App-title">{projectName}</h2>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
                     <Carousel className="App-image">
                         <div>
                             <img src="/kc2.jpg" alt="krusty crab"/>
@@ -25,9 +45,20 @@ export default function ProjectScreen() {
                             <img src="/kc.png" alt="krusty crab 2"></img>
                         </div>
                     </Carousel>
-                    <Button className="App-button" variant="contained">Buy</Button>
-                    <h5 className="App-projecttext">Available shares: 145</h5>
-                </div>
+                </Grid>
+                <Grid item xs={6} className="container2">
+                    <h3 className="floating-text">Buy {projectName} stock now!</h3>
+                    <div className="container">
+                        <Button className="button2" onClick={() => handleDown() }>-</Button>
+                        <div className="box">
+                            <p className="center-text">{selectedStock}</p>
+                        </div>
+                        <Button className="button3" onClick={() => handleUp()}>+</Button>
+                    </div>
+                    <Button className="button" variant="contained">Buy</Button>
+                    <h5 className="floating-text">Available shares: {availableStock}</h5>
+                </Grid>
+            </Grid>
         </div>
         </Wrapper>
     )
@@ -35,14 +66,56 @@ export default function ProjectScreen() {
 
 const Wrapper = styled.div`
   .container {
-    display: flex;align-items: center;
+    display: block;align-items: center;margin-bottom: 5%;
+  }
+  .container2{
+    align-items: center;
+    text-align: center;
   }
   .button{
     background-color: limegreen;
     color: black;
-    margin-left: 15%;
-    margin-bottom: 10%;
-    display: inline-flex;
     align-content: center;
+    margin-bottom: 5%;
   }
+  .floating-text{
+    color:white;
+    text-align: center;
+    clear: both;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .button2{
+    background-color: white;
+    color: black;
+    align-content: center;
+    border-radius: 100%;
+    margin: 5%;
+  }
+  .button3{
+    background-color: white;
+    color: black;
+    align-content: center;
+    border-radius: 100%;
+    margin: 5%;
+  }
+  .button2:hover{
+    background-color: darkslategray;
+  }.button3:hover{
+    background-color: darkslategray;
+  }
+  .box {
+    display: inline-flex;
+    width: 15%;
+    border-radius: 10%;
+    background-color: white;
+    text-align: center;
+  }
+  .center-text{
+    text-align: center;
+    align-self: center;
+    margin-left: 40%;
+  }
+  
+  
  `
