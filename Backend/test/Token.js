@@ -17,7 +17,7 @@ describe("Token contract", function () {
      hardhatToken2 = await Token2.deploy(owner.address,contractAddress1,"name","MBT",1000,1000,10);
      hardhatToken2.deployed();
      txHash2 =await hardhatToken2.deployTransaction.hash;
-     txReceipt2 = await ethers.provider.waitForTransaction(txHash);
+     txReceipt2 = await ethers.provider.waitForTransaction(txHash2);
      contractAddress2 = txReceipt2.contractAddress;
      
   } )
@@ -32,12 +32,14 @@ describe("Token contract", function () {
         const [owner,addr1] = await ethers.getSigners();
         // await console.log(Number(await Token.attach(contractAddress).balanceOf(addr1.address)));
         await hardhatToken.createProject(owner.address,contractAddress2,100)
-    
+        console.log(contractAddress2)
+        console.log(await hardhatToken.getProject(owner.address))
         await hardhatToken.connect(addr1).buyToken(owner.address,{
-                value: ethers.utils.parseEther("30.0")
+                value: ethers.utils.parseEther("30.0"),
+                
             });
         
-        expect(Number(await Token.attach(contractAddress2).balanceOf(addr1.address))).to.equal(30)
+        expect(Number(await hardhatToken2.balanceOf(addr1.address))).to.equal(30)
   
 //    const contractBalance = await ethers.provider.getBalance(hardhatToken1.address);
 //    let price = ethers.utils.formatUnits(contractBalance.toString(), "ether");

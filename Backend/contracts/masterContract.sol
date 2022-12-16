@@ -42,9 +42,12 @@ contract myMaster {
         mapProjectData[beneficiaryAddress].duration = duration;
         mapProjectData[beneficiaryAddress].start = block.timestamp;
         mapProjectData[beneficiaryAddress].canClaim = false;
+
         //TODO check amount
     }
-
+    function getProject(address beneficiaryAddress) public view returns( ProjectData memory){
+        return mapProjectData[beneficiaryAddress];
+    }
     function buyToken(address beneficiaryAddress) public payable{
         
         require( beneficiaryAddress != address(0),"1" );
