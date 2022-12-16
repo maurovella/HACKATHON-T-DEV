@@ -46,10 +46,7 @@ contract myMaster {
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
-    function addBeneficiary(IERC20 address) public returns (address){
-
-        //que devuelve un erc20 ? a que lo quisieron mappear aca? estos mappings estan al reves
-        mapProjectIdxToAddress[address] = New erc20();
+    function addBeneficiary(address IERC20 ) public returns (address){
 
         mapContractData[address].beneficiary = ERC20(address).getBeneficiary();
         //TODO check amount
@@ -62,7 +59,7 @@ contract myMaster {
         //necesito calcular el 4% , cuanto representa cada token de la empresa
 
         //esta linea no tiene sentido
-        require(ERC20(mapProjectIdxToAddress[adressWallet]).canTransfer(msg.value);)
+        require(ERC20(mapProjectIdxToAddress[adressWallet]).canTransfer(msg.value));
 
         //Aca debo sumar la plata que tiene la empresa. esta tampoco tiene sentido
         ERC20(mapProjectIdxToAddress[adressWallet]).transferValue(addressWallet, msg.value);

@@ -7,32 +7,33 @@ import "./IProject.sol";
 
 contract ProjectToken is ERC20, IProject, Ownable {
 
-    uint32 public equityValue;
-    uint8 public equity;
-    address public beneficiary;
-    constructor(address _beneficiary, string _name, string _symbol, uint32 _premint, uint32 _equityValue, uint8 _equity) ERC20(name_, symbol_) {
+    uint32 private equityValue;
+    uint8 private equity;
+    address private beneficiary;
+    constructor(address _beneficiary, string memory _name, string memory _symbol, uint32 _premint, uint32 _equityValue, uint8 _equity) ERC20(_name, _symbol) {
         require(_equity > 0 && _equity < 100, "Percentage not valid 100<%<0");
         _mint(msg.sender, _premint * 10 ** decimals());
         equityValue = _equityValue;
+        beneficiary = _beneficiary;
         equity = _equity;
     }
 
-    function calcTokens(uint32 _equityValue) public view returns (uint){
-        return value / this.totalSupply();
+    function calcTokens(uint256 _equityValue) public view returns (uint256){
+        return _equityValue / this.totalSupply();
     }
 
-    function canTransfer(uint32 value) public view returns (bool){
+    function canTransfer(uint256 value) public view returns (bool){
         return calcTokens(value)<=this.totalSupply();
     }
 
     function transferValue(address to, uint256 value) public onlyOwner{
-        require canTransfer(value);
+        require (canTransfer(value));
         this.transfer(to,calcTokens(value));
 
     }
 
 
-    function getBeneficiary() public view returns address{
+    function getBeneficiary() public view returns (address){
         return beneficiary;
     }
 
