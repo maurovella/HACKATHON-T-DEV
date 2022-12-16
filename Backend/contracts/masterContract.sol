@@ -12,8 +12,8 @@ contract myMaster {
     struct ProjectData{
         address project;
         uint256 balance;
-        uint256 duration;
-        uint256 start;
+        uint32 duration;
+        uint32 start;
         bool canClaim;
     }
 
