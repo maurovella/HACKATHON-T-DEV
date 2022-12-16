@@ -86,7 +86,15 @@ contract myMaster {
         }
     }
 
+    function __callback(bytes32 _myid, string memory _result) public
+    {
+        require(msg.sender == provable_cbAddress()); //aca se fija si el query es autentico
+        // emit LogNewDieselPrice(_result); aca podriamos emitir un evento
+        hasComplied = parseInt(_result, 1); // el result es lo que obtuvo del query
+        // Now do something with the USD Diesel price...
+    }
+
     function oracle() public view returns (bool){
-        return true;
+        return provable_query("WolframAlpha", "random integer number between 0 and 1");
     }
 }

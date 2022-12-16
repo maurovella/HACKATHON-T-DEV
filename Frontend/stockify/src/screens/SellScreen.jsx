@@ -2,15 +2,30 @@ import { useEtherContext } from '../contexts/EtherContext';
 import styled from 'styled-components';
 import {TextField, InputAdornment, Button, Container } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { toast } from 'react-hot-toast';
 
 export default function SellScreen() {
     const { EtherHelper } = useEtherContext()
+    const form_tpl = {  // Entries template
+      name: "pelote",
+      symbol: "PEL",
+      premint: 0xff,
+      equityValue: 0xff,
+      equity: 50,
+      duration: 16712,
+    }
     const mint = e => {
       e.preventDefault();
       const form = new FormData(e.target)
       const entries = Object.fromEntries(form)
-      console.log(entries)
-      EtherHelper.createProject(entries);
+      const promise = EtherHelper.createProject();
+      toast.promise(
+        promise,
+        {
+          loading: "Deploying project token contract...",
+          success: <b>Congratulations token deployed!</b>,
+          error: <b>Error while deploying project token contract 👾 </b>
+        })
     }
     return (
         <Wrapper>
