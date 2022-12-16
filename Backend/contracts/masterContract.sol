@@ -54,7 +54,6 @@ contract myMaster {
         require( beneficiaryAddress != address(0),"1" );
         require( mapProjectData[beneficiaryAddress].project != address(0),"2" );
         require(msg.value > 0);
-        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value),"3");
 
         IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
