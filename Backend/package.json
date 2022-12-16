@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.4"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "mocha": "^10.2.0",
+    "provable-eth-api": "^0.5.0-npmfix"
+  }
+}
