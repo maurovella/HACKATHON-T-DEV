@@ -13,6 +13,7 @@ Vincular a las personas que motivan este tipo de movimiento con la penalización
 Trabajar con un sistema Web3 permite saber perfectamente quien tiene algo que ganar o perder en una empresa, brindando transparencia ética y legal para el sistema. El sistema en general se beneficia de este paradigma ya que resulta en un blanqueo general de una empresa, y la empresa goza de la desvinculación de la responsabilidad de seguir shareholders con intenciones dudosas.
 
 
+
 Tecnología utilizada y funcionalidades desarrolladas
 
 Backend: 
@@ -25,6 +26,23 @@ Frontend:
 . Ingreso con metamask al sitio
 . Pantalla de compra de acciones (permite comprar acciones pero el contenido es un mock)
 . Pantalla de venta/creación de acciones para una empresa
+
+
+Como utilizar el contrato
+
+Existen dos contratos en este proyecto, masterContract y Project(que tiene una interfaz IProject)
+Project: Un contrato formato ERC20 estandar que funciona como un liquidity pool. En el constructor recibe la cantidad de tokens a emitir y el valor total
+de estos tokens asi tambien como quien es la empresa que desea deployarlo, que porcentaje representa de la empresa y la direccion del mastercontract.
+masterContract: Este contrato es la interfaz para interactuar con los ERC20 de las distintas empresas, permite comprar tokens de una empresa y una vez
+terminado el timeline decide que hacer con los fondos que contiene cada pool.
+
+Tenemos dos casos de uso:
+- La empresa, deployea su ERC20 y lo asigna en el contrato master(con la funcion addBeneficiary).
+- El usuario que compra tokens de las distintas empresas mediante el contrato master, luego puede utilizar estos tokens normalmente. En el caso
+que la empresa no cumpla el objetivo, puede claimear los fondos mediante el contrato master.
+
+OBS: desde el frontend se debe settear hardcodeado la varaible address que sera la wallet del beneficiary. En el futuro lo implementaremos bien pero falto esa parte en el front. 
+OBS: el back aprueba todos los testeos.
 
 
 TO DOs a futuro
