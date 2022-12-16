@@ -33,11 +33,11 @@ contract ProjectToken is ERC20, IProject, Ownable {
     }
 
 
-    function beneficiary() public view returns (address){
+    function getBeneficiary() public view returns (address){
         return beneficiary;
     }
 
-    function equityValue(){
+    function getEquityValue() public view returns(uint32){
         return equityValue;
     }
 
