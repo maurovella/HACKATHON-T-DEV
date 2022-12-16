@@ -59,7 +59,7 @@ export default function SellScreen() {
                                   <h4 className='t'>How many tokens do you wish to mint?</h4>
                                   <TextField variant="outlined" type="number" name="premint" className="text-field"/>
                                   <h4 className='t'>When is the deadline?</h4>
-                                  <TextField variant="outlined" type="date"  name="deadline" className="text-field" onChange={handleDeadline}/>
+                                  <TextField variant="outlined" type="date"  name="deadline" className="text-field"/>
                               </Grid>
                           </Grid>
 
