@@ -34,10 +34,10 @@ export default class EtherHelper {
         })
     }
 
-    async mintTokens(projectId, amount) { // ammount in Ethers
+    async mintTokens(project_address, amount) { // ammount in Ethers
         const ProjectManager = new ethers.Contract(ProjectManagerAddress, ProjectManager_sol.ABI, signer)
         return new Promise((resolve, reject) => {
-            ProjectManager.buyToken(projectId, { value: ethers.utils.parseEther(amount)})
+            ProjectManager.buyToken(project_address, { value: ethers.utils.parseEther(amount)})
                 .then(() => resolve())
                 .catch(err => reject(err))
         })

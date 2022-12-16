@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-
+import { useEtherContext } from '../contexts/EtherContext';
 import '../app.css'
 import styled from 'styled-components';
 import React, {useState} from "react";
@@ -8,17 +8,32 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import {Button} from "@mui/material";
 import AmountButtons from '../components/AmountButtons';
+import { toast } from 'react-hot-toast';
 
 export default function ProjectScreen() {
+  const { EtherHelper } = useEtherContext()
     const { projectId } = useParams();
 
 
+    const STOCK_ADDRESS = "0x"
     const [selectedStock, setSelectedStock] = useState(0);
     const [availableStock, setAvailableStock] = useState(145);
     //TODO: get real available number
 
     const projectName = "Krusty Crab"
     //TODO: get real name
+    
+    const buy = () => {
+      const promise = EtherHelper.mintTokens(STOCK_ADDRESS, selectedStock)
+      toast.promise(
+        promise,
+        {
+          loading: "Minting...",
+          success: "Tokens minted!",
+          error: "Error while minting the tokens!"
+        }
+      )
+    }
 
     const handleUp = () => {
         if (selectedStock < availableStock){
@@ -52,7 +67,7 @@ export default function ProjectScreen() {
                     <div className="container">
                       <AmountButtons increase={handleUp} decrease={handleDown} amount={selectedStock}/>
                     </div>
-                    <Button className="button" variant="contained">Buy</Button>
+                    <Button className="button" variant="contained" onClick={buy}>Buy</Button>
                     <h5 className="floating-text">Available shares: {availableStock}</h5>
                 </Grid>
             </Grid>
