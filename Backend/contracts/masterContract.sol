@@ -10,9 +10,9 @@ contract myMaster {
 
     struct ProjectData{
         address project;
-        uint64 liquidity;
-        uint64 duration;
-        uint64 start;
+        uint256 liquidity;
+        uint256 duration;
+        uint256 start;
         bool canClaim;
     }
 
@@ -29,19 +29,17 @@ contract myMaster {
     //     return mapContractData[contractAddress].beneficiary;
     // }
 
-    function canClaim(address beneficiaryAddress) public view virtual returns (uint256) {
+    function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
         return mapProjectData[beneficiaryAddress].canClaim;
     }
 
-    function claim() public virtual{
-        address contractAddress = mapPayeeWithContract[msg.sender];
+    function claim(address beneficiaryAdress) public virtual{
+        address contractAddress = mapProjectData[beneficiaryAdress].project;
         require(contractAddress != address(0));
-        require(canClaim(contractAddress));
-        uint64 amount = mapPayeeWithAmount[msg.sender];
-
-        delete mapPayeeWithContract[msg.sender];
-        delete mapPayeeWithAmount[msg.sender];
-        Address.sendValue(payable(msg.sender), amount);
+        require(mapProjectData[beneficiaryAdress].canClaim );
+      
+        uint256 amount =(mapProjectData[beneficiaryAdress].liquidity * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
+        payable(msg.sender).transfer(amount );
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
@@ -58,11 +56,12 @@ contract myMaster {
         //TODO check amount
     }
 
-    function buyToken(address beneficiaryAddress) payable{
+    function buyToken(address beneficiaryAddress) public payable{
         // hay que hacer require del msg.value? (probablemente si)
-        require(ERC20(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
+        require(IProject(mapProjectData[beneficiaryAddress].project).canTransfer(msg.value));
 
-        ERC20(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
+        IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
+
         mapProjectData[beneficiaryAddress].liquidity += msg.value;
     }
 
@@ -74,11 +73,11 @@ contract myMaster {
     //     SafeERC20.safeTransfer(IERC20(token), beneficiary(), amount);
     // }
 
-    function releaseEth(address beneficiaryAddress) public {
-        if ( block.now  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
-            if(/* oracle approves*/){
+    function releaseEth( address payable beneficiaryAddress ) public {
+        if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+            if(true){
                 //TODO: chequeo de permisos
-                Address.sendValue(payable(beneficiaryAddress), mapProjectData[beneficiaryAddress].liquidity);
+                beneficiaryAddress.transfer( mapProjectData[beneficiaryAddress].liquidity);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }
