@@ -8,7 +8,8 @@ import "./IProject.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 contract myMaster {
-
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
     struct ProjectData{
         address project;
         uint256 balance;
@@ -18,7 +19,7 @@ contract myMaster {
     }
 
     mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
-
+    mapping(uint256 => address) private mapAddress;
     function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
         return mapProjectData[beneficiaryAddress].canClaim;
     }
@@ -38,7 +39,8 @@ contract myMaster {
     function createProject(address beneficiaryAddress,
                             address ERC20Address,
                             uint256 duration) public {
-
+        _tokenIds.increment();
+        mapAddress[_tokenIds.current()] = beneficiaryAddress;
         mapProjectData[beneficiaryAddress].project = ERC20Address;
         mapProjectData[beneficiaryAddress].balance = 0;
         mapProjectData[beneficiaryAddress].duration = duration*1000*60*60*24;
@@ -50,9 +52,11 @@ contract myMaster {
     function getProject(address beneficiaryAddress) public view returns( ProjectData memory){
         return mapProjectData[beneficiaryAddress];
     }
-
-    function buyToken(address beneficiaryAddress) public payable{
-        
+    function getIds() public view returns(unint256){
+        return _tokenIds.current;
+    }
+    function buyToken(uint256 beneficiaryId) public payable{
+        address beneficiaryAddress = mapAddress[beneficiaryId]
         require( beneficiaryAddress != address(0),"1" );
         require( mapProjectData[beneficiaryAddress].project != address(0),"2" );
         require(msg.value > 0);
@@ -82,7 +86,15 @@ contract myMaster {
         }
     }
 
+    function __callback(bytes32 _myid, string memory _result) public
+    {
+        require(msg.sender == provable_cbAddress()); //aca se fija si el query es autentico
+        // emit LogNewDieselPrice(_result); aca podriamos emitir un evento
+        hasComplied = parseInt(_result, 1); // el result es lo que obtuvo del query
+        // Now do something with the USD Diesel price...
+    }
+
     function oracle() public view returns (bool){
-        return true;
+        return provable_query("WolframAlpha", "random integer number between 0 and 1");
     }
 }
