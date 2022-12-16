@@ -15,7 +15,7 @@ export default function ProjectScreen() {
     const { projectId } = useParams();
 
 
-    const STOCK_ADDRESS = "0x"
+    const STOCK_ADDRESS = "0x36A86cf8e0047e74DA9Ff29E20Be0A96e23d8566"
     const [selectedStock, setSelectedStock] = useState(0);
     const [availableStock, setAvailableStock] = useState(145);
     //TODO: get real available number
@@ -24,7 +24,7 @@ export default function ProjectScreen() {
     //TODO: get real name
     
     const buy = () => {
-      const promise = EtherHelper.mintTokens(STOCK_ADDRESS, selectedStock)
+      const promise = EtherHelper.mintTokens(STOCK_ADDRESS, selectedStock).catch(console.error)
       toast.promise(
         promise,
         {
