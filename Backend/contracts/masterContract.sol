@@ -40,7 +40,7 @@ contract myMaster {
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
     function createProject(address beneficiaryAddress,
-                            IERC20 ERC20Address,
+                            address ERC20Address,
                             uint64 duration,
                             uint64 start ) public{
 
