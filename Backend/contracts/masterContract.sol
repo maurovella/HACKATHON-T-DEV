@@ -28,8 +28,8 @@ contract myMaster {
         require(contractAddress != address(0));
         require(mapProjectData[beneficiaryAdress].canClaim );
 
-        uint256 amount =(mapProjectData[beneficiaryAdress].balance * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
-        payable(msg.sender).transfer(amount );
+        uint256 amount = (mapProjectData[beneficiaryAdress].balance * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
+        Address.sendValue(payable(msg.sender), amount);
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
@@ -48,6 +48,7 @@ contract myMaster {
     function getProject(address beneficiaryAddress) public view returns( ProjectData memory){
         return mapProjectData[beneficiaryAddress];
     }
+
     function buyToken(address beneficiaryAddress) public payable{
         
         require( beneficiaryAddress != address(0),"1" );
