@@ -1,6 +1,4 @@
-# HACKATHON-T-DEV
-
-Stockify
+# Stockify
 
 ¿Qué hacemos?
 
