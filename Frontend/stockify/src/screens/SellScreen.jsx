@@ -1,29 +1,33 @@
-import { useParams } from 'react-router-dom';
-
-import '../app.css'
 import { useEtherContext } from '../contexts/EtherContext';
 import styled from 'styled-components';
-import React from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import {Button} from "@mui/material";
+import {TextField, InputAdornment, Button, Container } from "@mui/material";
 
 export default function SellScreen() {
-    const { projectId } = useParams();
-
+    const { EtherHelper } = useEtherContext()
+    const mint = e => {
+      e.preventDefault();
+      const form = new FormData(e.target)
+      const entries = Object.fromEntries(form)
+      console.log(entries)
+      EtherHelper.createProject(entries);
+    }
     return (
         <Wrapper>
-        <div>
-            <h1 className="App-title"> Sell your Stock</h1>
-                <div className="container">
-                    <h4 className="t">What percentage of your company are you willing to mint?</h4>
-                    <textarea></textarea>
-                    <h4 className='t'>To what valuation?</h4>
-                    <textarea></textarea>
-                    <h4 className='t'>How many tokens do you want to mint?</h4>
-                    <textarea></textarea>
-                </div>
-        </div>
-        <Button className="button" >Mint</Button>
+          <Container>
+            <h1 className="title t"> Sell your Stock</h1>
+            <form onSubmit={mint}>
+              <div className="container">
+                  <h4 className="t">What percentage of your company are you willing to mint?</h4>
+                  <TextField variant="outlined" type="number" max="100" min="0" name="perc"/>
+                  <h4 className='t'>To what valuation?</h4>
+                  <TextField variant="outlined" type="number" min="0" name="valuation"/>
+                  <h4 className='t'>How many tokens do you want to mint?</h4>
+                  <TextField variant="outlined" type="number" min="0" name="tokenAmount"/>
+              </div>
+              <Button className="button" type="submit">Mint</Button>
+            </form>
+              
+          </Container>
         </Wrapper>
     )
 }
@@ -35,7 +39,7 @@ const Wrapper = styled.div`
     margin-left: 12%;
   }
 
-  .App-title{
+  .title{
     font-size: 40px;
   }
 
