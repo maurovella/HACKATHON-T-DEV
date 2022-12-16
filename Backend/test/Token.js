@@ -1,18 +1,18 @@
 const { expect, assert } = require("chai");
 const { ethers } = require("hardhat");
 
-const META_DATA_URL = "ipfs://QmXeB91TFPwNsSCjEiH9vWFZWuAJYaPmpmcQrptyYyhPc3"
 
 
 describe("Token contract", function () {
   before(async function(){
      [owner,addr1,addr2] = await ethers.getSigners();
-     Token = await ethers.getContractFactory("myContract",owner);
+     Token = await ethers.getContractFactory("myMaster",owner);
      hardhatToken = await Token.deploy();
      hardhatToken.deployed();
      txHash =await hardhatToken.deployTransaction.hash;
      txReceipt = await ethers.provider.waitForTransaction(txHash);
      contractAddress = txReceipt.contractAddress;
+     
   } )
  
  it("Deployment should assign the total supply of tokens to the owner", async function () {
