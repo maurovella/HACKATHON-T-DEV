@@ -10,20 +10,13 @@ contract myMaster {
 
     struct ProjectData{
         address project;
-        uint256 liquidity;
+        uint256 balance;
         uint256 duration;
         uint256 start;
         bool canClaim;
     }
 
     mapping(address => ProjectData) private mapProjectData; // Beneficiary -> ProjectData
-
-    //creo que esta esta demas, para que sirve? seria address[] no?
-    mapping(address => uint32[]) private mapBeneficiaryProjectList;
-
-    // function beneficiary(address beneficiaryAddress) public view virtual returns (address) {
-    //     return mapContractData[contractAddress].beneficiary;
-    // }
 
     function canClaim(address beneficiaryAddress) public view virtual returns (bool) {
         return mapProjectData[beneficiaryAddress].canClaim;
@@ -33,19 +26,19 @@ contract myMaster {
         address contractAddress = mapProjectData[beneficiaryAdress].project;
         require(contractAddress != address(0));
         require(mapProjectData[beneficiaryAdress].canClaim );
-      
-        uint256 amount =(mapProjectData[beneficiaryAdress].liquidity * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
+
+        uint256 amount =(mapProjectData[beneficiaryAdress].balance * IProject(mapProjectData[beneficiaryAdress].project).balanceOf(msg.sender))/(IProject(mapProjectData[beneficiaryAdress].project).totalSupply());
         payable(msg.sender).transfer(amount );
     }
 
     // Recibir el address del ERC20 como parametro, que lo deployee otro
     function createProject(address beneficiaryAddress,
-                            IERC20 ERC20Address,
+                            address ERC20Address,
                             uint64 duration,
-                            uint64 start ) public{
+                            uint64 start ) public {
 
         mapProjectData[beneficiaryAddress].project = ERC20Address;
-        mapProjectData[beneficiaryAddress].liquidity = 0;
+        mapProjectData[beneficiaryAddress].balance = 0;
         mapProjectData[beneficiaryAddress].duration = duration;
         mapProjectData[beneficiaryAddress].start = start;
         mapProjectData[beneficiaryAddress].canClaim = false;
@@ -58,22 +51,17 @@ contract myMaster {
 
         IProject(mapProjectData[beneficiaryAddress].project).transferValue(msg.sender, msg.value);
 
-        mapProjectData[beneficiaryAddress].liquidity += msg.value;
+        mapProjectData[beneficiaryAddress].balance += msg.value;
     }
 
-    //esto no se si sirve o no
-    // function release(IERC20 erc20, uint64 quantity) public virtual {
-    //     uint256 amount = releasable(token);
-    //     _erc20Released[tokenid] += amount;
-    //     emit ERC20Released(token, amount);
-    //     SafeERC20.safeTransfer(IERC20(token), beneficiary(), amount);
-    // }
 
     function releaseEth( address payable beneficiaryAddress ) public {
+        require( beneficiaryAddress != address(0) );
+        require( mapProjectData[beneficiaryAddress].project != address(0) );
         if ( block.timestamp  > mapProjectData[beneficiaryAddress].duration + mapProjectData[beneficiaryAddress].start){
+            //aca va el oraculo
             if(true){
-                //TODO: chequeo de permisos
-                beneficiaryAddress.transfer( mapProjectData[beneficiaryAddress].liquidity);
+                beneficiaryAddress.transfer(mapProjectData[beneficiaryAddress].balance);
             }else {
                 mapProjectData[beneficiaryAddress].canClaim = true;
             }
